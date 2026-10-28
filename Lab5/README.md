@@ -1,7 +1,7 @@
 # Lab 5: Static Code Analysis — Voting and Election Management System
 
-**MY file:** `election_system.py`
-**Name and SRN:** `INCHARA K KUPPAL -- PES1UG25CS818`
+**My file:** `election_system.py`
+# Name and SRN: `INCHARA K KUPPAL -- PES1UG25CS818`
 Follow the lab handout for the full instructions.
 
 ## About the program

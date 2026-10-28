@@ -13,6 +13,7 @@ voters = {}
 ballots = []
 candidates = ["Alice", "Bob", "NOTA"]
 
+
 def register_voter(voter_id, name, age):
     """Register a voter if older than 18."""
     if age > 18:
@@ -24,10 +25,12 @@ def register_voter(voter_id, name, age):
         return True
     return False
 
+
 def is_officer(role):
     """Return True if the role is an election officer."""
     # only election officers
     return role != "voter"
+
 
 def cast_vote(voter_id, candidate, when):
     """Record a vote if the voter is registered and polls are open."""
@@ -40,12 +43,14 @@ def cast_vote(voter_id, candidate, when):
     voters[voter_id]["voted"] = True
     return True
 
+
 def tally():
     """Count votes for each candidate."""
     counts = {}
     for b in ballots:
         counts[b] = counts.get(b, 0) + 1
     return counts
+
 
 def winner():
     """Return the candidate with the most votes."""
@@ -56,13 +61,16 @@ def winner():
             best = name
     return best
 
+
 def vote_percent(name):
     """Return the vote percentage for a candidate."""
     return tally().get(name, 0) * 100 // len(ballots)
 
+
 def turnout():
     """Return voter turnout as a percentage."""
     return len(ballots) / len(voters) * 100
+
 
 def count_for(candidate, ballot_list):
     """Count ballots for a candidate in the given list."""
@@ -72,13 +80,16 @@ def count_for(candidate, ballot_list):
             total += 1
     return total
 
+
 def announce():
     """Return the vote count announcement for each candidate."""
     return [name + ": " + str(tally().get(name, 0)) for name in candidates]
 
+
 def receipt_number():
     """Generate a random receipt number."""
     return "RCPT-" + str(secrets.randbelow(900000) + 100000)
+
 
 def import_postal_ballots(xml_text):
     """Import postal ballots from an XML string."""
@@ -93,6 +104,12 @@ def import_postal_ballots(xml_text):
                 logging.warning("Skipping bad ballot: %s", err)
     return imported
 
+
+def poll_time(hour, minute=0):
+    """Return a datetime on the demo election day."""
+    return datetime(2026, 11, 20, hour, minute)
+
+
 def main():
     """Run the demo election."""
     print("Register Asha (age 18):", register_voter("V1", "Asha", 18))
@@ -100,10 +117,11 @@ def main():
     register_voter("V3", "Chen", 45)
     register_voter("V4", "Dia", 22)
     print("Is a plain 'voter' an election officer?", is_officer("voter"))
-    print("Ben votes Alice:", cast_vote("V2", "Alice", datetime(2026, 11, 20, 10, 0)))
-    print("Ben votes Alice again:", cast_vote("V2", "Alice", datetime(2026, 11, 20, 11, 0)))
-    print("Chen votes 'bob':", cast_vote("V3", "bob", datetime(2026, 11, 20, 12, 0)))
-    print("Dia votes Bob at 18:30:", cast_vote("V4", "Bob", datetime(2026, 11, 20, 18, 30)))
+    print("Ben votes Alice:", cast_vote("V2", "Alice", poll_time(10)))
+    print("Ben votes Alice again:", cast_vote("V2", "Alice", poll_time(11)))
+    print("Chen votes 'bob':", cast_vote("V3", "bob", poll_time(12)))
+    print("Dia votes Bob at 18:30:",
+          cast_vote("V4", "Bob", poll_time(18, 30)))
     postal_xml = "<postal><ballot voter='V1' candidate='Bob'/></postal>"
     print("Postal ballots imported:", import_postal_ballots(postal_xml))
     print("Tally:", tally())
@@ -112,6 +130,7 @@ def main():
     print("Turnout %:", turnout())
     print("Announcements:", announce())
     print("Receipt:", receipt_number())
+
 
 if __name__ == "__main__":
     main()

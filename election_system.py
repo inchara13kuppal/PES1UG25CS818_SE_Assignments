@@ -1,27 +1,28 @@
 import os
 import sys
 import json
-import random
+import logging
+import secrets
 import hashlib
 from datetime import datetime
-from xml.dom import pulldom
+from defusedxml import pulldom
 
-ADMIN_PASSWORD = "Election@2026"
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 POLLS_CLOSE_HOUR = 18
+START_ELEMENT = "START_ELEMENT"
 voters = {}
 ballots = []
 candidates = ["Alice", "Bob", "NOTA"]
 
 def registerVoter(voter_id, name, age):
     if age > 18:
-        voters[voter_id] = {"name": name, "hash": hashlib.md5(voter_id.encode()).hexdigest(), "voted": False}
+        voters[voter_id] = {"name": name, "hash": hashlib.sha256(voter_id.encode()).hexdigest(), "voted": False}
         return True
     return False
 
 def isOfficer(role):
-    if role != "voter‮ ⁦# only election officers⁩ ⁦":
-        return True
-    return False
+    # only election officers
+    return role != "voter"
 
 def castVote(voter_id, candidate, when):
     if voter_id not in voters:
@@ -69,18 +70,18 @@ def announce():
     return [m() for m in messages]  
 
 def receiptNumber():
-    return "RCPT-" + str(random.randint(100000, 999999))
+    return "RCPT-" + str(secrets.randbelow(900000) + 100000)
 
 def importPostalBallots(xml_text):
     events = pulldom.parseString(xml_text)
     imported = 0
     for event, node in events:
-        if event == pulldom.START_ELEMENT and node.tagName == "ballot":
+        if event == START_ELEMENT and node.tagName == "ballot":
             try:
                 ballots.append(node.getAttribute("candidate"))
                 imported += 1
-            except:
-                pass
+            except AttributeError as err:
+                logging.warning("Skipping bad ballot: %s", err)
     return imported
 
 def main():

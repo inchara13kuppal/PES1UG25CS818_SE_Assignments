@@ -1,0 +1,6 @@
+************* Module election_system
+election_system.py:117:0: C0304: Final newline missing (missing-final-newline)
+
+------------------------------------------------------------------
+Your code has been rated at 9.88/10 (previous run: 5.33/10, +4.55)
+

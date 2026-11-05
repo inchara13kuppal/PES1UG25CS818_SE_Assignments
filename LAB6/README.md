@@ -15,4 +15,3 @@ A small Python module that works out race entry fees by distance, age and early-
 
 Keep all your Lab 6 work in this `LAB6` folder. Lab 7 will be added to this repo later.
 
-Refer to the lab handout for instructions.
